@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import { faker } from "@faker-js/faker";
 
@@ -120,8 +120,9 @@ const initialOptions = generateChoices(initialCorrectChoice, initialLength);
 
 function App() {
     const [jsonData, setJsonData] = useState(initialData);
+    // eslint-disable-next-line
     const [actualLengthOfJson, setActualLengthOfJson] = useState(initialLength);
-
+    // eslint-disable-next-line
     const [correctChoice, setCorrectChoice] = useState(initialCorrectChoice);
     const [choiceOptions, setChoiceOptions] = useState(initialOptions);
 
