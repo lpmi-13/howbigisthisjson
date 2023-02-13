@@ -1,4 +1,4 @@
-# How Big Is That JSON
+# How Big Is This JSON
 
 I found that I was consistently horrible at estimating the size of various json payloads just by looking at them, so I decided to create something to help me practice getting better at estimating.
 
