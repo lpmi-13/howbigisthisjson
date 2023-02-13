@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import "./App.css";
 import { faker } from "@faker-js/faker";
 
@@ -58,9 +58,7 @@ function byteLength(str) {
 }
 
 const addTwentyTwice = (answer) => {
-    console.log(answer);
     const twentyPercent = Math.floor(answer * 0.2);
-    console.log(twentyPercent);
     return [
         { correct: true, answer },
         { correct: false, answer: answer + twentyPercent },
@@ -69,9 +67,7 @@ const addTwentyTwice = (answer) => {
 };
 
 const addTwentyMinusTwenty = (answer) => {
-    console.log(answer);
     const twentyPercent = Math.floor(answer * 0.2);
-    console.log(twentyPercent);
     return [
         { correct: false, answer: answer - twentyPercent },
         { correct: true, answer },
@@ -80,9 +76,7 @@ const addTwentyMinusTwenty = (answer) => {
 };
 
 const minusTwentyTwice = (answer) => {
-    console.log(answer);
     const twentyPercent = Math.floor(answer * 0.2);
-    console.log(twentyPercent);
     return [
         { correct: false, answer: answer - twentyPercent * 2 },
         { correct: false, answer: answer - twentyPercent },
@@ -91,7 +85,6 @@ const minusTwentyTwice = (answer) => {
 };
 
 const generateChoices = (correctAnswer, actualLength) => {
-    console.log(`the correct answer is ${correctAnswer}`);
     switch (correctAnswer) {
         case 1:
             return addTwentyTwice(actualLength);
@@ -104,12 +97,19 @@ const generateChoices = (correctAnswer, actualLength) => {
     }
 };
 
-const AnswerButton = ({ correct, answer }) => {
-    console.log(answer);
+const PlaySection = ({ checkAnswer, choiceOptions }) => {
     return (
-        <button key={answer} type="button" className={`${correct}`}>
-            {answer}
-        </button>
+        <div className="choices">
+            {choiceOptions.map(({ answer, correct }) => (
+                <button
+                    key={answer}
+                    type="button"
+                    onClick={() => checkAnswer(correct)}
+                >
+                    {answer}
+                </button>
+            ))}
+        </div>
     );
 };
 
@@ -125,26 +125,30 @@ function App() {
     const [correctChoice, setCorrectChoice] = useState(initialCorrectChoice);
     const [choiceOptions, setChoiceOptions] = useState(initialOptions);
 
-    useEffect(() => {
-        setActualLengthOfJson(byteLength(JSON.stringify(jsonData)));
-        setCorrectChoice(lowMiddleOrHigh());
-        setChoiceOptions(generateChoices(correctChoice, actualLengthOfJson));
-    }, []);
+    const checkAnswer = (correct) => {
+        if (correct) {
+            const newData = jsonBlob();
+            const newLength = byteLength(JSON.stringify(newData));
+            const newChoice = lowMiddleOrHigh();
+            setJsonData(newData);
+            setActualLengthOfJson(newLength);
+            setCorrectChoice(newChoice);
+            setChoiceOptions(generateChoices(newChoice, newLength));
+        } else {
+            return;
+        }
+    };
 
     return (
         <div className="App">
+            <header>how big is this json? (in bytes)</header>
             <main>
-                <p>how big is this json?</p>
-                {/* <div className="codeblock"> */}
-                {/* <pre>{JSON.stringify(jsonData, null, 2)}</pre> */}
-                {/* </div> */}
-                <div className="answer">
-                    it is {actualLengthOfJson} bytes long!
-                </div>
-                <div>the correct answer is {correctChoice}</div>
-                <div>
-                    {choiceOptions &&
-                        choiceOptions.map((choice) => AnswerButton(choice))}
+                <PlaySection
+                    checkAnswer={checkAnswer}
+                    choiceOptions={choiceOptions}
+                />
+                <div className="codeblock">
+                    <pre>{JSON.stringify(jsonData, null, 2)}</pre>
                 </div>
             </main>
         </div>

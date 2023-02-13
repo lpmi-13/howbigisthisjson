@@ -13,16 +13,40 @@
     }
 }
 
-.instructions {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    font-size: 1.2rem;
-    margin: 1em 5em;
+header {
+    margin-top: 2em;
+}
+
+.codeblock {
+    margin: 1em;
 }
 
 .codeblock pre {
-    background: grey;
+    background: #d3d3d3;
     padding: 1.5em;
     text-align: left;
+    overflow: auto;
+    width: 80vw;
+}
+
+header {
+    font-size: 2.5rem;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1em 0;
+}
+
+.choices {
+    width: 80vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+button {
+    font-size: 2rem;
 }
