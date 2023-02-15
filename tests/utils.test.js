@@ -97,21 +97,43 @@ describe("proving length of json data doesn't count whitespace", () => {
         expect(lengthOfData).toBe(expectedConstantLength);
     });
 
-    test("get the length of a json string with lots of whitespace", () => {
+    test("the length of the three unprocessed json strings are not the same", () => {
+        const lengthOfUnprocessedJsonWithWhiteSpace = byteLength(
+            STATIC_JSON_STRING_WITH_WHITESPACE
+        );
+        const lengthOfUnprocessedJsonWithSomeWhiteSpace = byteLength(
+            STATIC_JSON_STRING_WITH_SOME_WHITESPACE
+        );
+        const lengthOfUnprocessedJsonWithNoWhiteSpace = byteLength(
+            STATIC_JSON_STRING_WITH_NO_WHITESPACE
+        );
+
+        expect(lengthOfUnprocessedJsonWithWhiteSpace).not.toEqual(
+            lengthOfUnprocessedJsonWithSomeWhiteSpace
+        );
+        expect(lengthOfUnprocessedJsonWithWhiteSpace).not.toEqual(
+            lengthOfUnprocessedJsonWithNoWhiteSpace
+        );
+        expect(lengthOfUnprocessedJsonWithSomeWhiteSpace).not.toEqual(
+            lengthOfUnprocessedJsonWithNoWhiteSpace
+        );
+    });
+
+    test("get the length of a processed json string with lots of whitespace", () => {
         const lengthOfData = byteLength(
             JSON.stringify(JSON.parse(STATIC_JSON_STRING_WITH_WHITESPACE))
         );
         expect(lengthOfData).toBe(expectedConstantLength);
     });
 
-    test("get the length of a json string with some whitespace", () => {
+    test("get the length of a processed json string with some whitespace", () => {
         const lengthOfData = byteLength(
             JSON.stringify(JSON.parse(STATIC_JSON_STRING_WITH_SOME_WHITESPACE))
         );
         expect(lengthOfData).toBe(expectedConstantLength);
     });
 
-    test("get the length of a json string with no whitespace", () => {
+    test("get the length of a processed json string with no whitespace", () => {
         const lengthOfData = byteLength(
             JSON.stringify(JSON.parse(STATIC_JSON_STRING_WITH_NO_WHITESPACE))
         );
