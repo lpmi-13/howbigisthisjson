@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+
 import "./App.css";
 import Score from "./Score";
 
@@ -8,13 +10,14 @@ const PlaySection = ({ checkAnswer, choiceOptions }) => {
     return (
         <div className="choices">
             {choiceOptions.map(({ answer, correct }) => (
-                <button
+                <motion.button
                     key={answer}
-                    type="button"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                     onClick={() => checkAnswer(correct)}
                 >
                     {answer}
-                </button>
+                </motion.button>
             ))}
         </div>
     );
@@ -59,7 +62,10 @@ export function App() {
 
     return (
         <div className="App">
-            <header>how big is this json? (in bytes)</header>
+            <header>
+                how big is this json?
+                <p className="small-text">(in bytes)</p>
+            </header>
             <main>
                 <div className="score-mobile">
                     <Score score={currentStreak} best={longestStreak} />
