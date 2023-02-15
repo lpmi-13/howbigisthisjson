@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
+import Score from "./Score";
 
 import { byteLength, generateChoices, jsonBlob, lowMiddleOrHigh } from "./util";
 
@@ -32,6 +33,9 @@ export function App() {
     const [correctChoice, setCorrectChoice] = useState(initialCorrectChoice);
     const [choiceOptions, setChoiceOptions] = useState(initialOptions);
 
+    const [currentStreak, setCurrentStreak] = useState(0);
+    const [longestStreak, setLongestStreak] = useState(0);
+
     const checkAnswer = (correct) => {
         if (correct) {
             const newData = jsonBlob();
@@ -41,15 +45,25 @@ export function App() {
             setActualLengthOfJson(newLength);
             setCorrectChoice(newChoice);
             setChoiceOptions(generateChoices(newChoice, newLength));
+            setCurrentStreak(currentStreak + 1);
         } else {
-            return;
+            setCurrentStreak(0);
         }
     };
+
+    useEffect(() => {
+        setLongestStreak(
+            currentStreak > longestStreak ? currentStreak : longestStreak
+        );
+    }, [currentStreak, longestStreak]);
 
     return (
         <div className="App">
             <header>how big is this json? (in bytes)</header>
             <main>
+                <div className="score-mobile">
+                    <Score score={currentStreak} best={longestStreak} />
+                </div>
                 <PlaySection
                     checkAnswer={checkAnswer}
                     choiceOptions={choiceOptions}

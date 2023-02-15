@@ -50,3 +50,12 @@ main {
 button {
     font-size: 2rem;
 }
+
+.score-mobile {
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 50%;
+    margin: 1em 0;
+}
