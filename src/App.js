@@ -4,15 +4,23 @@ import Toggle from "react-toggle";
 
 import "./App.css";
 import "./toggle.css";
-import Score from "./Score";
+import { SelectScore, SupplyScore } from "./Score";
 
 import { byteLength, generateChoices, jsonBlob, lowMiddleOrHigh } from "./util";
 
-const HardModeInput = ({ clickHandler, length }) => {
+const HardModeInput = ({ changeHandler, clickHandler, guess }) => {
     return (
         <div className="answerInput">
-            <label for="answer">Your guess</label>
-            <input type="text" name="answer"></input>
+            <input
+                type="text"
+                name="guess"
+                aria-label="Guess"
+                onChange={changeHandler}
+                value={guess}
+            ></input>
+            <button type="submit" onClick={clickHandler}>
+                Guess
+            </button>
         </div>
     );
 };
@@ -46,9 +54,14 @@ export function App() {
     // eslint-disable-next-line
     const [choiceOptions, setChoiceOptions] = useState(initialOptions);
 
-    // tracking the scores
+    // tracking the scores for the easy mode
     const [currentStreak, setCurrentStreak] = useState(0);
     const [longestStreak, setLongestStreak] = useState(0);
+
+    // tracking how close the guess was in hard mode
+    const [guess, setGuess] = useState("");
+    const [percentGuess, setPercentGuess] = useState(0);
+    const [closestGuess, setClosestGuess] = useState(0);
 
     // tracking which mode, easy/hard, which is the same as select/supply
     // "select" is when the user has three choices and picks one
@@ -57,20 +70,45 @@ export function App() {
 
     const checkSelectAnswer = (correct) => {
         if (correct) {
-            const newData = jsonBlob();
-            const newLength = byteLength(JSON.stringify(newData));
-            const newChoice = lowMiddleOrHigh();
-            setJsonData(newData);
-            setActualLengthOfJson(newLength);
-            setChoiceOptions(generateChoices(newChoice, newLength));
+            handleNewData();
             setCurrentStreak(currentStreak + 1);
         } else {
             setCurrentStreak(0);
         }
     };
 
-    const checkSupplyAnswer = (answer) => {
-        console.log(answer);
+    const checkSupplyAnswer = () => {
+        const upperBound = actualLengthOfJson * 2;
+        const lowerBound = 0;
+        // we can restrict guesses a bit
+        if (upperBound > guess > lowerBound) {
+            const percentClose = Math.floor(
+                (Math.abs(actualLengthOfJson - guess) / actualLengthOfJson) *
+                    100
+            );
+            const score = Math.abs(100 - percentClose);
+            setPercentGuess(score);
+            if (score > closestGuess) {
+                setClosestGuess(score);
+            }
+        } else {
+            setPercentGuess(0);
+        }
+        handleNewData();
+    };
+
+    const handleInput = (input) => {
+        setGuess(input.target.value);
+    };
+
+    const handleNewData = () => {
+        const newData = jsonBlob();
+        const newLength = byteLength(JSON.stringify(newData));
+        const newChoice = lowMiddleOrHigh();
+        setJsonData(newData);
+        setActualLengthOfJson(newLength);
+        setChoiceOptions(generateChoices(newChoice, newLength));
+        setGuess("");
     };
 
     useEffect(() => {
@@ -89,24 +127,42 @@ export function App() {
                 <Toggle
                     id="mode-toggle"
                     defaultChecked={true}
-                    onChange={() =>
-                        setCurrentMode(currentMode === "easy" ? "hard" : "easy")
-                    }
+                    onChange={() => {
+                        setCurrentMode(
+                            currentMode === "easy" ? "hard" : "easy"
+                        );
+                        handleNewData();
+                    }}
                 />
                 <label htmlFor="mode-toggle">{currentMode} mode</label>
-                <div className="score-mobile">
-                    <Score score={currentStreak} best={longestStreak} />
-                </div>
                 {currentMode === "easy" ? (
-                    <EasyModeInput
-                        clickHandler={checkSelectAnswer}
-                        choiceOptions={choiceOptions}
-                    />
+                    <>
+                        <div className="score-mobile">
+                            <SelectScore
+                                score={currentStreak}
+                                best={longestStreak}
+                            />
+                        </div>
+                        <EasyModeInput
+                            clickHandler={checkSelectAnswer}
+                            choiceOptions={choiceOptions}
+                        />
+                    </>
                 ) : (
-                    <HardModeInput
-                        clickHandler={checkSupplyAnswer}
-                        length={actualLengthOfJson}
-                    />
+                    <>
+                        <div className="score-mobile">
+                            <SupplyScore
+                                score={percentGuess}
+                                best={closestGuess}
+                            />
+                        </div>
+                        <HardModeInput
+                            changeHandler={handleInput}
+                            clickHandler={checkSupplyAnswer}
+                            guess={guess}
+                            length={actualLengthOfJson}
+                        />
+                    </>
                 )}
                 <div className="codeblock">
                     <pre>{JSON.stringify(jsonData, null, 2)}</pre>

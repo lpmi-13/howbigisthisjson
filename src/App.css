@@ -60,11 +60,23 @@ button {
     box-shadow: 5px 5px 10px grey;
 }
 
+.answerInput {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 75%;
+}
+
+.answerInput input {
+    height: 2em;
+}
+
 .score-mobile {
     font-size: 1.5rem;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
-    width: 50%;
+    justify-content: space-between;
+    width: 75%;
     margin: 0.5em 0;
 }

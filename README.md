@@ -6,6 +6,10 @@ I found that I was consistently horrible at estimating the size of various json 
 
 The web UI just generates a random json payload and presents three options to guess how many bytes it would be without whitespace (as it would be in a network response). Then you guess and find out if you were right.
 
+### Hard Mode
+
+flipping the "hard mode" toggles whether you have to just guess a number. It's much more difficult.
+
 ## Running locally
 
 ```
