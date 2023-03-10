@@ -2,18 +2,8 @@
     text-align: center;
 }
 
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
-}
-
 header {
+    font-size: 1.5rem;
     margin-top: 1em;
 }
 
@@ -30,12 +20,8 @@ header {
     height: 60vh;
 }
 
-header {
-    font-size: 2.5rem;
-}
-
 header .small-text {
-    font-size: 1.5rem;
+    font-size: 1rem;
     margin: 0;
 }
 
